@@ -9,7 +9,21 @@ async function getAllUsers(req, res) {
   const client = await pool.connect();
   try {
     const result = await client.query("SELECT * FROM users");
-    res.json(result);
+    res.json(result.rows);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Erro ao buscar usuários do banco de dados" });
+  } finally {
+    client.release();
+  }
+}
+
+async function getAllUsers(req, res) {
+  const client = await pool.connect();
+  try {
+    const result = await client.query("SELECT * FROM users");
+    res.json(result.rows);
   } catch (error) {
     res
       .status(500)
