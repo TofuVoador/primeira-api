@@ -1,26 +1,23 @@
-const userModel = require("../models/User");
+import pg from "pg";
+
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+});
 
 // Controlador para buscar todos os usuários
 async function getAllUsers(req, res) {
+  const client = await pool.connect();
   try {
-    const users = await userModel.getAllUsers();
+    const result = await client.query("SELECT * FROM users");
     res.json(users);
   } catch (error) {
     res
       .status(500)
       .json({ error: "Erro ao buscar usuários do banco de dados" });
-  }
-}
-
-async function postUser(req, res) {
-  const {} = req.body;
-  try {
-    const users = await userModel.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Erro ao buscar usuários do banco de dados" });
+  } finally {
+    client.release();
   }
 }
 
