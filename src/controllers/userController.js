@@ -1,6 +1,4 @@
-import pg from "pg";
-
-const { Pool } = pg;
+const { Pool } = require("pg");
 
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
@@ -11,7 +9,7 @@ async function getAllUsers(req, res) {
   const client = await pool.connect();
   try {
     const result = await client.query("SELECT * FROM users");
-    res.json(users);
+    res.json(result);
   } catch (error) {
     res
       .status(500)
