@@ -23,7 +23,9 @@ async function getUserById(req, res) {
   const { id } = req.params;
   const client = await pool.connect();
   try {
-    const result = await client.query(`SELECT * FROM users WHERE id = ${id}`);
+    const result = await client.query(`SELECT * FROM users WHERE id = $1`, [
+      id,
+    ]);
     res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: "Erro ao buscar usuário no banco de dados" });
@@ -37,7 +39,8 @@ async function postUser(req, res) {
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO Users (name, email) VALUES (${name}, ${email})`
+      `INSERT INTO Users (name, email) VALUES ($1, $2)`,
+      [name, email]
     );
     res.json(result.rows);
   } catch (error) {
